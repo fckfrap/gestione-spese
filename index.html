@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#3568d4">
+<title>Gestione Spese · v7.2.0</title>
+<link rel="icon" type="image/svg+xml" href="logo.svg">
+<link rel="apple-touch-icon" href="logo.svg">
+<link rel="stylesheet" href="style.css">
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0f172a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Gestione Spese">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+</head>
+<body>
+<div id="lockScreen" class="lock-screen hidden">
+  <div class="lock-card">
+    <img src="logo.svg" class="lock-logo" alt="Gestione Spese">
+    <h1>Gestione Spese</h1>
+    <p>Inserisci il PIN per accedere ai tuoi dati.</p>
+    <input id="lockPin" class="input pin-input" inputmode="numeric" maxlength="8" type="password" placeholder="PIN">
+    <button id="unlockBtn" class="btn primary full">Sblocca</button>
+    <div id="lockError" class="error"></div>
+  </div>
+</div>
+
+<div id="app" class="app hidden">
+<aside class="sidebar">
+  <div class="brand">
+    <img src="logo.svg" class="app-logo" alt="Gestione Spese">
+    <div><strong>Gestione Spese</strong><span>Personale</span></div>
+  </div>
+  <nav id="nav">
+    <button class="nav-btn active" data-section="dashboard">⌂ <span>Dashboard</span></button>
+    <button class="nav-btn" data-section="transactions">☷ <span>Transazioni</span></button>
+    <button class="nav-btn" data-section="accounts">▣ <span>Conti</span></button>
+    <button class="nav-btn" data-section="budgets">◫ <span>Budget</span></button>
+    <button class="nav-btn" data-section="goals">◎ <span>Obiettivi</span></button>
+    <button class="nav-btn" data-section="recurring">↻ <span>Ricorrenti</span></button>
+    <button class="nav-btn" data-section="analytics">◒ <span>Analisi</span></button>
+    <button class="nav-btn" data-section="networth">◇ <span>Patrimonio</span></button>
+    <button class="nav-btn" data-section="subscriptions">↻ <span>Abbonamenti</span></button>
+    <button class="nav-btn" data-section="debts">▣ <span>Debiti</span></button>
+    <button class="nav-btn" data-section="receipts">▤ <span>Ricevute</span></button>
+    <button class="nav-btn" data-section="report">▥ <span>Report</span></button>
+    <button class="nav-btn" data-section="calendar">▦ <span>Calendario</span></button>
+    <button class="nav-btn" data-section="alerts">⚠ <span>Avvisi</span><b id="alertBadge" class="nav-badge hidden">0</b></button>
+    <button class="nav-btn" data-section="categories">⌘ <span>Categorie</span></button>
+    <button class="nav-btn" data-section="changelog">▤ <span>Changelog</span></button>
+  </nav>
+  <div class="sidebar-bottom">
+    <button class="nav-btn" data-section="settings">⚙ <span>Impostazioni</span></button>
+    <button id="lockBtn" class="side-action">🔒 <span>Blocca app</span></button>
+  </div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+  <div>
+    <p class="eyebrow">GESTIONE FINANZIARIA PERSONALE</p>
+    <h1 id="pageTitle">Dashboard</h1>
+    <p id="pageSubtitle">Una panoramica chiara delle tue finanze.</p>
+  </div>
+  <div class="top-actions">
+    <button id="themeBtn" class="icon-btn" title="Cambia tema">☀</button>
+    <button id="quickExpense" class="btn danger">− Spesa</button>
+    <button id="quickIncome" class="btn income-btn">＋ Entrata</button>
+    <button id="quickRecurring" class="btn primary">↻ Ricorrente</button>
+  </div>
+</header>
+
+<section id="dashboard" class="section active">
+  <div class="today-strip panel">
+    <div><span class="today-kicker">OGGI</span><h2>La tua situazione</h2><p id="todaySummary">Aggiornamento automatico.</p></div>
+    <div class="today-stats">
+      <div><span>Saldo</span><b id="todayBalance">€ 0,00</b></div>
+      <div><span>Entrate</span><b id="todayIncome" class="positive">+€ 0,00</b></div>
+      <div><span>Spese</span><b id="todayExpense" class="negative">−€ 0,00</b></div>
+      <div><span>Prossimo movimento</span><b id="todayNext">—</b></div>
+    </div>
+  </div>
+  <div class="hero-grid">
+    <div class="card hero-balance">
+      <div class="card-label">Patrimonio disponibile</div>
+      <strong id="totalBalance" class="hero-value">€ 0,00</strong>
+      <div class="balance-meta"><span id="balanceTrend">—</span><span>•</span><span id="balanceMonth">mese corrente</span></div>
+      <div class="mini-accounts" id="miniAccounts"></div>
+    </div>
+    <div class="card metric income-card"><span>Entrate del mese</span><strong id="monthIncome">€ 0,00</strong><small id="incomeCompare">—</small></div>
+    <div class="card metric expense-card"><span>Spese del mese</span><strong id="monthExpense">€ 0,00</strong><small id="expenseCompare">—</small></div>
+    <div class="card metric saving-card"><span>Risparmio del mese</span><strong id="monthSaving">€ 0,00</strong><small id="savingRate">0% del reddito</small></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-head"><div><h2>Andamento saldo</h2><p>Ultimi 6 mesi</p></div><span class="panel-chip">Saldo</span></div>
+      <div id="monthlyChart" class="monthly-chart"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><div><h2>Dove spendi</h2><p>Distribuzione del mese</p></div></div>
+      <div class="category-chart-wrap"><div id="donut" class="donut"><div><strong id="donutTotal">€ 0</strong><span>spese</span></div></div><div id="categoryLegend" class="legend"></div></div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-head"><div><h2>Prossimi movimenti</h2><p>Entrate e spese ricorrenti</p></div><button class="text-btn" data-go="recurring">Vedi tutti</button></div>
+      <div id="upcoming"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><div><h2>Ultime transazioni</h2><p>Movimenti più recenti</p></div><button class="text-btn" data-go="transactions">Vedi tutte</button></div>
+      <div id="recent"></div>
+    </div>
+  </div>
+
+  <div class="insight-panel" id="smartInsight"></div><div class="grid-2">
+    <div class="panel forecast-panel"><div class="panel-head"><div><h2>Previsione fine mese</h2><p>Basata su saldo, ricorrenze e media delle spese.</p></div><span class="panel-chip">Stima</span></div><div id="forecastBox"></div></div>
+    <div class="panel"><div class="panel-head"><div><h2>Abbonamenti</h2><p>Costi ricorrenti di servizi e sottoscrizioni.</p></div><button class="text-btn" data-go="subscriptions">Gestisci</button></div><div id="subscriptionSummary"></div></div>
+  </div>
+  
+</section>
+
+<section id="transactions" class="section">
+  <div class="section-toolbar">
+    <div><h2>Transazioni</h2><p>Controlla, modifica e filtra tutti i movimenti.</p></div>
+    <button class="btn primary" data-action="new-expense">＋ Nuova transazione</button>
+  </div>
+  <div class="filter-bar panel">
+    <input id="txSearch" class="input" placeholder="Cerca descrizione o nota…">
+    <select id="txType" class="input"><option value="all">Tutti i tipi</option><option value="income">Entrate</option><option value="expense">Spese</option></select>
+    <select id="txAccount" class="input"><option value="all">Tutti i conti</option></select>
+    <select id="txCategory" class="input"><option value="all">Tutte le categorie</option></select>
+    <input id="txFrom" class="input" type="date">
+    <input id="txTo" class="input" type="date">
+  </div>
+  <div class="panel table-panel"><div id="transactionsList"></div></div>
+</section>
+
+<section id="accounts" class="section">
+  <div class="section-toolbar"><div><h2>Conti e portafogli</h2><p>Separali per sapere esattamente dove sono i tuoi soldi.</p></div><button class="btn primary" data-action="new-account">＋ Nuovo conto</button></div>
+  <div id="accountsGrid" class="account-grid"></div>
+</section>
+
+<section id="budgets" class="section">
+  <div class="section-toolbar"><div><h2>Budget</h2><p>Limiti mensili per categoria con indicatori automatici.</p></div><button class="btn primary" data-action="new-budget">＋ Nuovo budget</button></div>
+  <div id="budgetGrid" class="budget-grid"></div>
+</section>
+
+<section id="goals" class="section">
+  <div class="section-toolbar"><div><h2>Obiettivi di risparmio</h2><p>Trasforma un obiettivo in un percorso misurabile.</p></div><button class="btn primary" data-action="new-goal">＋ Nuovo obiettivo</button></div>
+  <div id="goalsGrid" class="goal-grid"></div>
+</section>
+
+<section id="recurring" class="section">
+  <div class="section-toolbar"><div><h2>Ricorrenti</h2><p>Gestisci entrate e spese automatiche.</p></div><button class="btn primary" data-action="new-recurring">＋ Nuova ricorrenza</button></div>
+  <div id="recurringGrid" class="recurring-grid"></div>
+</section>
+
+<section id="analytics" class="section">
+  <div class="section-toolbar"><div><h2>Analisi finanziaria</h2><p>Confronti, medie e andamento delle tue abitudini.</p></div><select id="analyticsPeriod" class="input period-select"><option value="6">Ultimi 6 mesi</option><option value="12">Ultimi 12 mesi</option></select></div>
+  <div class="analytics-cards" id="analyticsCards"></div>
+  <div class="grid-2"><div class="panel"><div class="panel-head"><div><h2>Entrate vs spese</h2><p>Confronto mensile</p></div></div><div id="incomeExpenseChart" class="compare-chart"></div></div><div class="panel"><div class="panel-head"><div><h2>Categorie</h2><p>Spese dell'ultimo mese</p></div></div><div id="categoryBars"></div></div></div>
+</section>
+
+<section id="calendar" class="section">
+  <div class="section-toolbar"><div><h2>Calendario finanziario</h2><p>Vedi quando arrivano e partono i soldi.</p></div><div class="calendar-nav"><button class="icon-btn" id="prevMonth">‹</button><strong id="calendarTitle"></strong><button class="icon-btn" id="nextMonth">›</button></div></div>
+  <div class="calendar-grid" id="calendarGrid"></div>
+</section>
+
+<section id="alerts" class="section">
+  <div class="section-toolbar"><div><h2>Avvisi intelligenti</h2><p>Segnalazioni basate sui tuoi budget e sulle tue spese.</p></div></div>
+  <div id="alertsList" class="alerts-list"></div>
+</section>
+
+<section id="categories" class="section">
+  <div class="section-toolbar"><div><h2>Categorie</h2><p>Personalizza le categorie che usi nelle transazioni.</p></div><button class="btn primary" data-action="new-category">＋ Nuova categoria</button></div>
+  <div id="categoriesGrid" class="categories-grid"></div>
+</section>
+
+
+<section id="networth" class="section">
+  <div class="section-toolbar"><div><h2>Patrimonio netto</h2><p>Disponibilità, risparmi e debiti in un'unica vista.</p></div></div>
+  <div class="networth-hero panel"><div><span>Patrimonio netto</span><strong id="netWorthValue">€ 0,00</strong><small id="netWorthTrend">—</small></div><div class="networth-breakdown" id="netWorthBreakdown"></div></div>
+  <div class="grid-2"><div class="panel"><div class="panel-head"><div><h2>Composizione</h2><p>Situazione attuale</p></div></div><div id="netWorthBars"></div></div><div class="panel"><div class="panel-head"><div><h2>Andamento</h2><p>Patrimonio stimato negli ultimi mesi</p></div></div><div id="netWorthHistory" class="history-chart"></div></div></div>
+</section>
+
+<section id="subscriptions" class="section">
+  <div class="section-toolbar"><div><h2>Abbonamenti</h2><p>Controlla quanto spendi ogni mese e quando avvengono i rinnovi.</p></div><button class="btn primary" data-action="new-subscription">＋ Nuovo abbonamento</button></div>
+  <div class="subscription-total panel" id="subscriptionTotal"></div>
+  <div id="subscriptionsGrid" class="subscription-grid"></div>
+</section>
+
+<section id="debts" class="section">
+  <div class="section-toolbar"><div><h2>Debiti e finanziamenti</h2><p>Monitora rate, residuo e scadenze.</p></div><button class="btn primary" data-action="new-debt">＋ Nuovo debito</button></div>
+  <div id="debtsGrid" class="debt-grid"></div>
+</section>
+
+<section id="receipts" class="section">
+  <div class="section-toolbar"><div><h2>Ricevute e documenti</h2><p>Associa foto o documenti alle tue spese.</p></div><button class="btn primary" data-action="new-receipt">＋ Aggiungi ricevuta</button></div>
+  <div class="receipt-note panel"><strong>📷 Archivio locale</strong><span>I file vengono salvati nel browser. Per sicurezza, esporta periodicamente un backup.</span></div>
+  <div id="receiptsGrid" class="receipts-grid"></div>
+</section>
+
+<section id="report" class="section">
+  <div class="section-toolbar"><div><h2>Report mensile</h2><p>Un riepilogo completo delle tue finanze, pronto per la stampa o il PDF.</p></div><div class="report-actions"><input id="reportMonth" class="input" type="month"><button class="btn primary" id="printReport">🖨 Genera PDF</button></div></div>
+  <div id="reportPreview" class="report-page"></div>
+</section>
+
+<section id="changelog" class="section">
+  <div class="section-toolbar"><div><h2>Changelog</h2><p>Cronologia delle versioni, direttamente nell'app.</p></div><span class="current-version">v7.2.0</span></div>
+  <div class="timeline" id="changelogContent"></div>
+</section>
+
+<section id="settings" class="section"><div class="panel backup-panel"><div><h2>Backup dati</h2><p>La versione desktop crea automaticamente un punto di ripristino all'avvio. Puoi crearne uno manualmente o ripristinarne uno precedente.</p></div><button class="btn primary" data-action="backup-manager">Gestisci backup</button></div>
+  <div class="section-toolbar"><div><h2>Impostazioni</h2><p>Privacy, backup, tema e sicurezza.</p></div></div>
+  <div class="settings-grid">
+    <div class="panel settings-card"><h3>🔐 Protezione PIN</h3><p>Blocca l'app quando vuoi. Il PIN è locale al browser.</p><div class="setting-row"><span id="pinStatus">PIN non attivo</span><button id="pinToggle" class="btn secondary">Configura PIN</button></div><div class="setting-row"><span>Blocca automaticamente</span><select id="autoLock" class="input small-select"><option value="0">Mai</option><option value="5">Dopo 5 minuti</option><option value="15">Dopo 15 minuti</option><option value="30">Dopo 30 minuti</option></select></div></div>
+    <div class="panel settings-card"><h3>💾 Backup locale</h3><p>Esporta tutti i dati in un file JSON o ripristina un backup precedente.</p><div class="settings-actions"><button id="exportBtn" class="btn secondary">Esporta backup</button><label class="btn secondary file-btn">Importa backup<input id="importFile" type="file" accept=".json"></label></div></div>
+    <div class="panel settings-card"><h3>🎨 Aspetto</h3><p>Personalizza la modalità dell'app.</p><div class="setting-row"><span>Modalità</span><select id="themeSelect" class="input small-select"><option value="light">Chiara</option><option value="dark">Scura</option></select></div></div>
+    <div class="panel settings-card danger-zone"><h3>⚠ Zona dati</h3><p>Queste operazioni modificano i dati locali. Esporta prima un backup.</p><button id="resetBtn" class="btn danger">Cancella tutti i dati</button></div>
+  </div>
+</section>
+
+<footer class="app-footer"><span>Gestione Spese · v7.2.0</span><span>Dati salvati localmente</span></footer>
+</main>
+</div>
+
+<div id="modal" class="modal hidden"><div class="modal-card"><button id="modalClose" class="modal-close">×</button><div id="modalContent"></div></div></div>
+<div id="toast" class="toast hidden"></div>
+<script src="script.js"></script>
+
+<nav class="mobile-bottom-nav" aria-label="Navigazione mobile">
+  <button class="mobile-nav-item active" data-mobile-target="dashboard"><span>⌂</span><small>Home</small></button>
+  <button class="mobile-nav-item" data-mobile-target="analysis"><span>◔</span><small>Analisi</small></button>
+  <button class="mobile-nav-add" data-action="new-expense" aria-label="Aggiungi transazione"><span>＋</span></button>
+  <button class="mobile-nav-item" data-mobile-target="transactions"><span>☷</span><small>Movimenti</small></button>
+  <button class="mobile-nav-item" data-mobile-target="settings"><span>⚙</span><small>Altro</small></button>
+</nav>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));
+}
+</script>
+</body>
+</html>

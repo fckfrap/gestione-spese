@@ -1,0 +1,27 @@
+{
+  "name": "gestione-spese",
+  "version": "7.2.0",
+  "description": "Gestione personale delle spese",
+  "main": "main.js",
+  "author": "Francesco",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "build": {
+    "appId": "it.gestionespese.app",
+    "productName": "Gestione Spese",
+    "files": [
+      "**/*"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "icon.ico"
+    }
+  },
+  "devDependencies": {
+    "electron": "^43.0.0",
+    "electron-builder": "^26.15.3"
+  }
+}
