@@ -602,3 +602,36 @@ function init(){
 }
 init();
 
+
+
+/* v7.2.4 — Mobile quick actions.
+   On mobile/tablet the bottom-center + is the only add entry point. */
+(function () {
+  function hideMobileTopQuickActions() {
+    if (window.innerWidth > 1024) return;
+
+    const labels = /spesa|entrata|ricorrente/i;
+    document.querySelectorAll('button, a').forEach(function (el) {
+      const text = (el.textContent || '').trim();
+      if (!labels.test(text)) return;
+
+      const rect = el.getBoundingClientRect();
+      const top = rect.top + window.scrollY;
+      if (top < window.innerHeight * 0.8) {
+        el.classList.add('mobile-top-action-hidden');
+      }
+    });
+  }
+
+  function initMobileTopQuickActions() {
+    hideMobileTopQuickActions();
+    window.addEventListener('resize', hideMobileTopQuickActions, { passive: true });
+    window.addEventListener('orientationchange', hideMobileTopQuickActions, { passive: true });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMobileTopQuickActions);
+  } else {
+    initMobileTopQuickActions();
+  }
+})();

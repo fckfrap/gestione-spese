@@ -1,4 +1,4 @@
-GESTIONE SPESE v7.2.3
+GESTIONE SPESE v7.2.4
 
 WINDOWS
 npm install

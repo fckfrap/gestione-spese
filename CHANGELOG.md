@@ -1,5 +1,12 @@
 # Changelog — Gestione Spese
 
+## v7.2.4 — Ottimizzazione comandi mobile
+- Rimossi dal layout mobile i pulsanti rapidi Spesa, Entrata e Ricorrente.
+- Mantenuti i comandi rapidi nella versione desktop.
+- Il pulsante centrale `+` della navigazione mobile diventa il punto unico per aggiungere entrate, spese e ricorrenze.
+- Ridotto lo spazio occupato dai comandi nella parte superiore della Home su smartphone e tablet.
+
+
 ## v7.2.3 — Correzione menu mobile
 - Corretto il menu inferiore su smartphone e tablet.
 - Navigazione mobile resa indipendente dall'inizializzazione delle altre funzioni dell'app.

@@ -325,3 +325,19 @@ body.dark .today-strip{background:linear-gradient(110deg,#14213a,#111c2e)}
   .hero-grid{grid-template-columns:1fr 1fr!important}
   .hero-balance{grid-column:1 / -1}
 }
+
+
+/* v7.2.4 — Mobile: use the bottom-center + as the single add action.
+   Keep the desktop quick actions unchanged. */
+@media (max-width: 1024px) {
+  .quick-actions,
+  .quick-action-buttons,
+  .top-actions,
+  .dashboard-actions {
+    display: none !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  .mobile-top-action-hidden { display: none !important; }
+}
