@@ -1,4 +1,4 @@
-const VERSION="7.2.6";
+const VERSION="7.3.0";
 const STORAGE_KEY="expenseAppData";
 const BACKUP_KEY="expenseAppBackups";
 const OLD_KEY="expenseAppData";
@@ -64,6 +64,7 @@ let currentSection="dashboard";
 function save(){
   state.version=VERSION;
   localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+  if(window.SupabaseSync) window.SupabaseSync.queueSave(state);
 }
 function backup(){
   const arr=JSON.parse(localStorage.getItem(BACKUP_KEY)||"[]");
@@ -456,6 +457,7 @@ function renderCategories(){
 }
 function renderChangelog(){
   $("changelogContent").innerHTML=[
+    ["7.3.0","Account e sincronizzazione cloud",["Accesso tramite account Supabase","Sincronizzazione dei dati finanziari tra dispositivi","Salvataggio locale mantenuto come cache e fallback","Gestione account dalle Impostazioni","PIN e blocco automatico mantenuti locali"]],
     ["7.2.6","Correzione installazione PWA",["Corretto il pulsante Installa Gestione Spese nelle Impostazioni","Su iPhone e iPad il pulsante mostra una guida passo passo per Aggiungi alla schermata Home","Su browser compatibili mantiene l’installazione nativa tramite beforeinstallprompt","Aggiunta una procedura di fallback quando il browser non espone il comando di installazione"]],
      ["7.2.5","PWA installabile e aggiornamenti affidabili",["Manifest PWA rifinito con modalità standalone e metadati dedicati","Installazione guidata dalle Impostazioni","Pulsante + mobile con scelta tra Spesa, Entrata e Ricorrente","Service Worker con cache versionata e aggiornamenti più affidabili","Supporto offline dei file statici"]],
     ["7.2.4","Ottimizzazione comandi mobile",["Rimossi i comandi rapidi superiori dalla versione mobile","Mantenuti i comandi rapidi nella versione desktop","Pulsante + centrale come punto unico per le nuove operazioni"]],
@@ -482,6 +484,14 @@ function renderSettings(){
   $("pinToggle").textContent=state.settings.pinHash?"Cambia/Rimuovi PIN":"Configura PIN";
   $("autoLock").value=String(state.settings.autoLock||0);$("themeSelect").value=state.settings.dark?"dark":"light";
   document.body.classList.toggle("dark",!!state.settings.dark);$("themeBtn").textContent=state.settings.dark?"☾":"☀";
+  const cloudStatus=$("cloudStatus"), cloudUser=$("cloudUser"), cloudLogout=$("cloudLogout");
+  if(cloudStatus){
+    if(!SupabaseSync.configured()){ cloudStatus.textContent="Non configurato"; cloudStatus.className="cloud-status warn"; }
+    else if(SupabaseSync.isAuthenticated()){ cloudStatus.textContent="Sincronizzazione attiva"; cloudStatus.className="cloud-status ok"; }
+    else { cloudStatus.textContent="Non collegato"; cloudStatus.className="cloud-status warn"; }
+  }
+  if(cloudUser) cloudUser.textContent=SupabaseSync.user()?.email||"";
+  if(cloudLogout) cloudLogout.hidden=!SupabaseSync.isAuthenticated();
 }
 
 function openModal(content){$("modalContent").innerHTML=content;$("modal").classList.remove("hidden")}
@@ -594,6 +604,44 @@ $("themeBtn").onclick=()=>{state.settings.dark=!state.settings.dark;save();rende
 $("unlockBtn").onclick=unlock;$("lockPin").addEventListener("keydown",e=>{if(e.key==="Enter")unlock()});
 $("lockBtn").onclick=()=>{if(state.settings.pinHash)showLock();else pinForm()};
 
+function showCloudError(message){ toast("Sincronizzazione non riuscita: "+message,"info"); }
+function showAuthScreen(){
+  const el=$("authScreen"); if(!el)return;
+  el.classList.remove("hidden"); $("app").classList.add("hidden");
+}
+function hideAuthScreen(){ const el=$("authScreen"); if(el)el.classList.add("hidden"); $("app").classList.remove("hidden"); }
+function setAuthMode(mode){
+  $("authTitle").textContent=mode==="signup"?"Crea il tuo account":"Accedi a Gestione Spese";
+  $("authSubmit").textContent=mode==="signup"?"Crea account":"Accedi";
+  $("authSwitch").textContent=mode==="signup"?"Hai già un account? Accedi":"Non hai ancora un account? Registrati";
+  $("authSwitch").dataset.mode=mode==="signup"?"signin":"signup";
+  $("authMessage").textContent="";
+  $("authForm").dataset.mode=mode;
+}
+async function handleAuth(e){
+  e.preventDefault();
+  const email=$("authEmail").value.trim(), password=$("authPassword").value;
+  if(!email||password.length<6){$("authMessage").textContent="Inserisci un'email valida e una password di almeno 6 caratteri.";return}
+  const mode=$("authForm").dataset.mode||"signin";
+  const btn=$("authSubmit");btn.disabled=true;$("authMessage").textContent="Connessione in corso…";
+  try{
+    const result=mode==="signup"?await SupabaseSync.signUp(email,password):await SupabaseSync.signIn(email,password);
+    if(mode==="signup" && !result?.access_token){
+      $("authMessage").textContent="Account creato. Controlla l'email per confermare l'indirizzo, poi accedi.";
+      setAuthMode("signin");
+    }else{
+      state=normalize(await SupabaseSync.pullState(state));
+      localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+      hideAuthScreen();renderAll();toast("Account collegato","success");
+    }
+  }catch(err){ $("authMessage").textContent=err.message||"Impossibile completare l'operazione."; }
+  finally{btn.disabled=false}
+}
+$("authForm")?.addEventListener("submit",handleAuth);
+$("authSwitch")?.addEventListener("click",()=>setAuthMode($("authSwitch").dataset.mode||"signup"));
+$("cloudLogout")?.addEventListener("click",async()=>{if(!confirm("Scollegare questo account da Gestione Spese?"))return;await SupabaseSync.signOut();renderSettings();showAuthScreen();setAuthMode("signin");});
+window.addEventListener("supabase-sync",e=>{const el=$("syncIndicator");if(!el)return;el.textContent=e.detail.ok?"Cloud sincronizzato":"Errore sincronizzazione";el.className=e.detail.ok?"sync-indicator ok":"sync-indicator warn";});
+
 function bindActions(){
   $("quickExpense").onclick=()=>openTransaction(null,"expense");
   $("quickIncome").onclick=()=>openTransaction(null,"income");
@@ -602,9 +650,23 @@ function bindActions(){
 }
 bindActions();
 
-function init(){
+async function init(){
   // Preserve previous local data and create a backup before first migration.
-  if(state.version!=="7.0.0"){backup();state.version=VERSION;save()}
+  if(state.version!==VERSION){backup();state.version=VERSION;localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}
+  const cloud=await SupabaseSync.init();
+  if(cloud.configured && !cloud.authenticated){
+    showAuthScreen();
+    return;
+  }
+  if(cloud.authenticated){
+    try{
+      state=normalize(await SupabaseSync.pullState(state));
+      localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+    }catch(err){
+      console.error("Cloud pull:",err);
+      showCloudError(err.message);
+    }
+  }
   if(state.settings.pinHash)showLock();
   else {$("app").classList.remove("hidden");renderAll()}
 }

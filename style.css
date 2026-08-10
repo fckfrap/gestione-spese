@@ -352,3 +352,9 @@ body.dark .today-strip{background:linear-gradient(110deg,#14213a,#111c2e)}
   .pwa-install-card{order:-1}
   .pwa-add-menu .btn{min-height:48px}
 }
+
+
+/* v7.3.0 — Account e sincronizzazione cloud */
+.auth-screen{position:fixed;inset:0;background:var(--bg);z-index:120;display:grid;place-items:center;padding:20px}
+.auth-card{width:min(420px,100%);background:var(--panel);border:1px solid var(--border);border-radius:22px;padding:30px;box-shadow:var(--shadow);text-align:center}
+.auth-logo{width:68px;height:68px;margin-bottom:12px}.auth-card h1{font-size:22px;margin:0 0 7px}.auth-sub{font-size:11px;color:var(--muted);line-height:1.6;margin:0 0 20px}.auth-card form{display:grid;gap:12px;text-align:left}.auth-card label{font-size:10px;color:var(--muted);font-weight:700}.auth-card label .input{margin-top:5px}.auth-switch{margin-top:14px}.auth-message{min-height:20px;margin-top:12px;color:var(--red);font-size:10px}.auth-note{display:block;margin-top:14px;color:var(--muted);font-size:9px;line-height:1.5}.cloud-status{font-size:11px;font-weight:800}.cloud-status.ok{color:var(--green)}.cloud-status.warn{color:var(--red)}.sync-indicator{display:block;margin-top:9px;color:var(--muted);font-size:9px}.sync-indicator.ok{color:var(--green)}.sync-indicator.warn{color:var(--red)}.muted-line{font-size:10px;color:var(--muted)}

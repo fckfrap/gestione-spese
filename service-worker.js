@@ -1,9 +1,10 @@
-const CACHE_NAME = "gestione-spese-v7-2-6";
+const CACHE_NAME = "gestione-spese-v7-3-0";
 const APP_SHELL = [
   "./",
   "./index.html",
   "./style.css",
   "./script.js",
+  "./supabase-client.js",
   "./manifest.json",
   "./logo.svg",
   "./icons/icon-192.png",

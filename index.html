@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#3568d4">
-<title>Gestione Spese · v7.2.6</title>
+<title>Gestione Spese · v7.3.0</title>
 <link rel="icon" type="image/svg+xml" href="logo.svg">
 <link rel="apple-touch-icon" href="logo.svg">
 <link rel="stylesheet" href="style.css">
@@ -18,6 +18,22 @@
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 </head>
 <body>
+<div id="authScreen" class="auth-screen hidden">
+  <div class="auth-card">
+    <img src="logo.svg" class="auth-logo" alt="Gestione Spese">
+    <h1 id="authTitle">Accedi a Gestione Spese</h1>
+    <p class="auth-sub">Accedi per sincronizzare automaticamente i tuoi dati tra PC, smartphone e tablet.</p>
+    <form id="authForm" data-mode="signin">
+      <label>Email<input id="authEmail" class="input" type="email" autocomplete="email" required></label>
+      <label>Password<input id="authPassword" class="input" type="password" autocomplete="current-password" minlength="6" required></label>
+      <button id="authSubmit" class="btn primary full">Accedi</button>
+    </form>
+    <button id="authSwitch" class="text-btn auth-switch" data-mode="signup">Non hai ancora un account? Registrati</button>
+    <div id="authMessage" class="auth-message"></div>
+    <small class="auth-note">I dati finanziari vengono associati al tuo account. Il PIN dell'app rimane locale sul dispositivo.</small>
+  </div>
+</div>
+
 <div id="lockScreen" class="lock-screen hidden">
   <div class="lock-card">
     <img src="logo.svg" class="lock-logo" alt="Gestione Spese">
@@ -212,7 +228,7 @@
 </section>
 
 <section id="changelog" class="section">
-  <div class="section-toolbar"><div><h2>Changelog</h2><p>Cronologia delle versioni, direttamente nell'app.</p></div><span class="current-version">v7.2.6</span></div>
+  <div class="section-toolbar"><div><h2>Changelog</h2><p>Cronologia delle versioni, direttamente nell'app.</p></div><span class="current-version">v7.3.0</span></div>
   <div class="timeline" id="changelogContent"></div>
 </section>
 
@@ -220,6 +236,7 @@
   <div class="section-toolbar"><div><h2>Impostazioni</h2><p>Privacy, backup, tema e sicurezza.</p></div></div>
   <div class="settings-grid">
     <div class="panel settings-card"><h3>🔐 Protezione PIN</h3><p>Blocca l'app quando vuoi. Il PIN è locale al browser.</p><div class="setting-row"><span id="pinStatus">PIN non attivo</span><button id="pinToggle" class="btn secondary">Configura PIN</button></div><div class="setting-row"><span>Blocca automaticamente</span><select id="autoLock" class="input small-select"><option value="0">Mai</option><option value="5">Dopo 5 minuti</option><option value="15">Dopo 15 minuti</option><option value="30">Dopo 30 minuti</option></select></div></div>
+    <div class="panel settings-card cloud-card"><h3>☁️ Sincronizzazione cloud</h3><p>Collega un account per usare gli stessi dati su PC, smartphone e tablet.</p><div class="setting-row"><span id="cloudStatus" class="cloud-status">Non collegato</span><span id="cloudUser" class="muted-line"></span></div><div class="settings-actions"><button id="cloudLogout" class="btn secondary" hidden>Disconnetti account</button></div><small id="syncIndicator" class="sync-indicator">I dati locali restano disponibili anche durante la configurazione.</small></div>
     <div class="panel settings-card"><h3>💾 Backup locale</h3><p>Esporta tutti i dati in un file JSON o ripristina un backup precedente.</p><div class="settings-actions"><button id="exportBtn" class="btn secondary">Esporta backup</button><label class="btn secondary file-btn">Importa backup<input id="importFile" type="file" accept=".json"></label></div></div>
     <div class="panel settings-card"><h3>🎨 Aspetto</h3><p>Personalizza la modalità dell'app.</p><div class="setting-row"><span>Modalità</span><select id="themeSelect" class="input small-select"><option value="light">Chiara</option><option value="dark">Scura</option></select></div></div>
     <div class="panel settings-card pwa-install-card" id="pwaInstallCard" hidden>
@@ -232,12 +249,13 @@
   </div>
 </section>
 
-<footer class="app-footer"><span>Gestione Spese · v7.2.6</span><span>Dati salvati localmente</span></footer>
+<footer class="app-footer"><span>Gestione Spese · v7.3.0</span><span>Sincronizzazione cloud disponibile</span></footer>
 </main>
 </div>
 
 <div id="modal" class="modal hidden"><div class="modal-card"><button id="modalClose" class="modal-close">×</button><div id="modalContent"></div></div></div>
 <div id="toast" class="toast hidden"></div>
+<script src="supabase-client.js"></script>
 <script src="script.js"></script>
 
 <nav class="mobile-bottom-nav" aria-label="Navigazione mobile">
@@ -249,7 +267,7 @@
 </nav>
 
 <script>
-/* v7.2.6 — PWA mobile
+/* v7.3.0 — PWA mobile
    - Navigation remains independent from the main app initialization.
    - The central + opens a choice between expense, income and recurring.
    - PWA installation is exposed from Settings when supported. */

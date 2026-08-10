@@ -1,5 +1,13 @@
 # Changelog — Gestione Spese
 
+## v7.3.0 — Account e sincronizzazione cloud
+- Aggiunto accesso tramite account Supabase.
+- Aggiunta sincronizzazione cloud dei dati finanziari tra dispositivi.
+- Mantenuto il salvataggio locale come cache e fallback.
+- Aggiunto collegamento/disconnessione dell'account dalle Impostazioni.
+- Mantenuti PIN e blocco automatico locali sul dispositivo.
+- Preparata la base per la sincronizzazione progressiva delle funzioni avanzate.
+
 ## v7.2.6 — Correzione installazione PWA
 - Corretto il pulsante **Installa Gestione Spese** nelle Impostazioni.
 - Su iPhone e iPad il pulsante mostra una guida passo passo per aggiungere l'app alla schermata Home.
