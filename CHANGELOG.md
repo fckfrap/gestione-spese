@@ -1,5 +1,11 @@
 # Changelog — Gestione Spese
 
+## v7.2.6 — Correzione installazione PWA
+- Corretto il pulsante **Installa Gestione Spese** nelle Impostazioni.
+- Su iPhone e iPad il pulsante mostra una guida passo passo per aggiungere l'app alla schermata Home.
+- Su browser compatibili mantiene l'installazione nativa tramite `beforeinstallprompt`.
+- Aggiunta una procedura di fallback quando il browser non espone il comando di installazione.
+
 ## v7.2.5 — PWA installabile e aggiornamenti affidabili
 - Manifest PWA rifinito con identificativo, modalità standalone e metadati dedicati.
 - Aggiunta installazione guidata dalle Impostazioni.

@@ -1,4 +1,4 @@
-const VERSION="7.2.5";
+const VERSION="7.2.6";
 const STORAGE_KEY="expenseAppData";
 const BACKUP_KEY="expenseAppBackups";
 const OLD_KEY="expenseAppData";
@@ -456,7 +456,8 @@ function renderCategories(){
 }
 function renderChangelog(){
   $("changelogContent").innerHTML=[
-    ["7.2.5","PWA installabile e aggiornamenti affidabili",["Manifest PWA rifinito con modalità standalone e metadati dedicati","Installazione guidata dalle Impostazioni","Pulsante + mobile con scelta tra Spesa, Entrata e Ricorrente","Service Worker con cache versionata e aggiornamenti più affidabili","Supporto offline dei file statici"]],
+    ["7.2.6","Correzione installazione PWA",["Corretto il pulsante Installa Gestione Spese nelle Impostazioni","Su iPhone e iPad il pulsante mostra una guida passo passo per Aggiungi alla schermata Home","Su browser compatibili mantiene l’installazione nativa tramite beforeinstallprompt","Aggiunta una procedura di fallback quando il browser non espone il comando di installazione"]],
+     ["7.2.5","PWA installabile e aggiornamenti affidabili",["Manifest PWA rifinito con modalità standalone e metadati dedicati","Installazione guidata dalle Impostazioni","Pulsante + mobile con scelta tra Spesa, Entrata e Ricorrente","Service Worker con cache versionata e aggiornamenti più affidabili","Supporto offline dei file statici"]],
     ["7.2.4","Ottimizzazione comandi mobile",["Rimossi i comandi rapidi superiori dalla versione mobile","Mantenuti i comandi rapidi nella versione desktop","Pulsante + centrale come punto unico per le nuove operazioni"]],
     ["7.2.3","Correzione menu mobile",["Navigazione mobile corretta","Stato attivo delle sezioni","Pulsante + mobile"]],
     ["7.2.2","Correzione navigazione mobile",["Menu inferiore corretto su smartphone e tablet","Navigazione mobile sincronizzata con le sezioni desktop","Corretto il raggiungimento delle sezioni tramite scrollIntoView","Stato attivo della barra di navigazione mantenuto","Nuove sezioni aperte dall'inizio"]],

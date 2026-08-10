@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#3568d4">
-<title>Gestione Spese · v7.2.5</title>
+<title>Gestione Spese · v7.2.6</title>
 <link rel="icon" type="image/svg+xml" href="logo.svg">
 <link rel="apple-touch-icon" href="logo.svg">
 <link rel="stylesheet" href="style.css">
@@ -212,7 +212,7 @@
 </section>
 
 <section id="changelog" class="section">
-  <div class="section-toolbar"><div><h2>Changelog</h2><p>Cronologia delle versioni, direttamente nell'app.</p></div><span class="current-version">v7.2.5</span></div>
+  <div class="section-toolbar"><div><h2>Changelog</h2><p>Cronologia delle versioni, direttamente nell'app.</p></div><span class="current-version">v7.2.6</span></div>
   <div class="timeline" id="changelogContent"></div>
 </section>
 
@@ -232,7 +232,7 @@
   </div>
 </section>
 
-<footer class="app-footer"><span>Gestione Spese · v7.2.5</span><span>Dati salvati localmente</span></footer>
+<footer class="app-footer"><span>Gestione Spese · v7.2.6</span><span>Dati salvati localmente</span></footer>
 </main>
 </div>
 
@@ -249,7 +249,7 @@
 </nav>
 
 <script>
-/* v7.2.5 — PWA mobile
+/* v7.2.6 — PWA mobile
    - Navigation remains independent from the main app initialization.
    - The central + opens a choice between expense, income and recurring.
    - PWA installation is exposed from Settings when supported. */
@@ -317,6 +317,18 @@
   },true);
 
   let deferredInstallPrompt=null;
+  function openPWAInstallGuide(platform){
+    const isIOSGuide=platform==="ios";
+    const title=isIOSGuide ? "Installa Gestione Spese su iPhone/iPad" : "Installa Gestione Spese";
+    const body=isIOSGuide
+      ? `<div class="install-guide"><p>Su iPhone e iPad l'installazione non può essere avviata direttamente dal sito.</p><ol><li>Tocca <strong>Condividi</strong> <span aria-label="Condividi">⬆️</span> in Safari.</li><li>Scorri il menu e scegli <strong>Aggiungi alla schermata Home</strong>.</li><li>Conferma con <strong>Aggiungi</strong>.</li></ol><p class="modal-sub">Dopo l'aggiunta troverai Gestione Spese tra le app della schermata Home.</p></div>`
+      : `<div class="install-guide"><p>Il browser non ha fornito il comando di installazione automatica.</p><ol><li>Apri il menu del browser.</li><li>Scegli <strong>Installa app</strong> oppure <strong>Aggiungi alla schermata Home</strong>.</li><li>Conferma l'installazione.</li></ol><p class="modal-sub">Se il comando non compare, aggiorna la pagina e riprova.</p></div>`;
+    if(typeof openModal==="function") openModal(`<h2>${title}</h2>${body}`);
+    else if(hint) hint.textContent=isIOSGuide
+      ? "Safari → Condividi → Aggiungi alla schermata Home."
+      : "Apri il menu del browser e scegli Installa app o Aggiungi alla schermata Home.";
+  }
+
   function setupPWAInstall(){
     const card=document.getElementById("pwaInstallCard");
     const button=document.getElementById("pwaInstallBtn");
@@ -331,8 +343,11 @@
       return;
     }
 
-    function showIOSHint(){
-      if(hint) hint.textContent="Su iPhone/iPad: Safari → Condividi → Aggiungi alla schermata Home.";
+    const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+    if(isIOS){
+      button.hidden=false;
+      card.hidden=false;
+      if(hint) hint.textContent="Tocca il pulsante per vedere i passaggi di installazione.";
     }
 
     window.addEventListener("beforeinstallprompt",event=>{
@@ -351,14 +366,14 @@
         if(result?.outcome==="accepted") card.hidden=true;
         return;
       }
-      showIOSHint();
+      openPWAInstallGuide(isIOS ? "ios" : "browser");
     });
 
     window.addEventListener("appinstalled",()=>{card.hidden=true;});
-    const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
-    if(isIOS){ button.hidden=false; card.hidden=false; showIOSHint(); }
     if(!deferredInstallPrompt && !isIOS && hint){
-      hint.textContent="Su Chrome/Edge, usa il comando Installa app del browser quando disponibile.";
+      hint.textContent="Tocca il pulsante per vedere come installare l'app dal browser.";
+      button.hidden=false;
+      card.hidden=false;
     }
   }
 

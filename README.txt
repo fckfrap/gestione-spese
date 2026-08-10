@@ -1,10 +1,10 @@
-GESTIONE SPESE v7.2.5
+GESTIONE SPESE v7.2.6
 
 WINDOWS
 npm install
 npm start
 npm run build
-Installer: dist/Gestione Spese Setup 7.2.5.exe
+Installer: viene generato da npm run build usando la versione definita in package.json.
 
 SMARTPHONE / TABLET
 La cartella contiene manifest.json e service-worker.js. La PWA usa una cache versionata e rileva gli aggiornamenti pubblicati.
