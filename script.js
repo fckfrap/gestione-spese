@@ -1,4 +1,4 @@
-const VERSION="7.2.3";
+const VERSION="7.2.4";
 const STORAGE_KEY="expenseAppData";
 const BACKUP_KEY="expenseAppBackups";
 const OLD_KEY="expenseAppData";

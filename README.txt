@@ -4,7 +4,7 @@ WINDOWS
 npm install
 npm start
 npm run build
-Installer: dist/Gestione Spese Setup 7.2.3.exe
+Installer: dist/Gestione Spese Setup 7.2.4.exe
 
 SMARTPHONE / TABLET
 La cartella contiene manifest.json e service-worker.js.
