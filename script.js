@@ -1,4 +1,4 @@
-const VERSION="7.2.4";
+const VERSION="7.2.5";
 const STORAGE_KEY="expenseAppData";
 const BACKUP_KEY="expenseAppBackups";
 const OLD_KEY="expenseAppData";
@@ -455,18 +455,25 @@ function renderCategories(){
   $("categoriesGrid").querySelectorAll("[data-del-cat]").forEach(b=>b.onclick=()=>deleteCategory(b.dataset.delCat));
 }
 function renderChangelog(){
-  $("changelogContent").innerHTML=[["7.2.2","Smartphone, tablet e PWA",["Interfaccia responsive","Navigazione mobile","PWA installabile","Supporto smartphone e tablet","Service Worker per uso più affidabile","Icone PWA dedicate"]],
+  $("changelogContent").innerHTML=[
+    ["7.2.5","PWA installabile e aggiornamenti affidabili",["Manifest PWA rifinito con modalità standalone e metadati dedicati","Installazione guidata dalle Impostazioni","Pulsante + mobile con scelta tra Spesa, Entrata e Ricorrente","Service Worker con cache versionata e aggiornamenti più affidabili","Supporto offline dei file statici"]],
+    ["7.2.4","Ottimizzazione comandi mobile",["Rimossi i comandi rapidi superiori dalla versione mobile","Mantenuti i comandi rapidi nella versione desktop","Pulsante + centrale come punto unico per le nuove operazioni"]],
+    ["7.2.3","Correzione menu mobile",["Navigazione mobile corretta","Stato attivo delle sezioni","Pulsante + mobile"]],
+    ["7.2.2","Correzione navigazione mobile",["Menu inferiore corretto su smartphone e tablet","Navigazione mobile sincronizzata con le sezioni desktop","Corretto il raggiungimento delle sezioni tramite scrollIntoView","Stato attivo della barra di navigazione mantenuto","Nuove sezioni aperte dall'inizio"]],
+    ["7.2.1","Ottimizzazione mobile",["Nuova disposizione dei comandi rapidi","Corrette sovrapposizioni e problemi di layout","Navigazione mobile migliorata","Supporto Safe Area per iPhone e iPad","Grafici e card adattati agli schermi piccoli","Tipografia mobile migliorata"]],
+    ["7.2.0","Smartphone, tablet e PWA",["Interfaccia responsive per smartphone e tablet","Navigazione mobile con barra inferiore","Pulsante rapido per aggiungere una transazione","Supporto PWA installabile","Service Worker per connettività intermittente","Icone PWA dedicate","Versione Windows Electron mantenuta"]],
     ["7.1.0","Backup automatici e sicurezza dei dati",["Backup automatico all'avvio","Conservazione degli ultimi 15 backup","Ripristino completo dei dati","Gestione backup dalle Impostazioni","Apertura della cartella dei backup","Icona personalizzata dell'app"]],
-    ["7.0.0","Finanza personale completa",["Dashboard finanziaria avanzata","Previsioni e analisi delle spese","Obiettivi di risparmio","Calendario finanziario","Avvisi intelligenti","Categorie personalizzabili","Ricorrenze settimanali, mensili e annuali","PIN e blocco automatico"]],
-    ["5.3.1","Pulizia interfaccia",["Rimossa la vecchia scritta blu flottante","Rifiniture del tema chiaro e tipografia"]],
-    ["5.3.0","Rifinitura tema chiaro",["Palette più morbida","Font e gerarchia tipografica migliorati","Pulsanti e contrasto rifiniti"]],
-    ["5.2.0","Changelog integrato e branding",["Changelog direttamente nell'app","Logo SVG e favicon","GUI e controlli migliorati"]],
-    ["5.1.0","Correzioni interfaccia",["Modalità scura corretta","Risolti problemi di duplicazione logo"]],
-    ["5.0.0","Restyling grafico",["Nuova identità visiva","Dashboard e componenti ridisegnati"]],
-    ["4.0.0","Ricorrenze e filtri",["Spese ricorrenti","Filtri avanzati","Migrazione e backup"]],
-    ["3.0.0","Backup e compatibilità",["Versionamento dati","Backup automatici","Import/export JSON"]],
-    ["2.0.0","Entrate ricorrenti",["Entrate mensili automatiche"]],
-    ["1.0.0","Prima versione",["Dashboard, transazioni, budget e salvataggio locale"]]
+    ["7.0.0","Finanza personale avanzata",["Dashboard Oggi con saldo, entrate, spese e prossimo movimento","Previsione di fine mese basata sui dati locali","Patrimonio netto con disponibilità, risparmi e debiti","Gestione abbonamenti con costo mensile e annuale","Gestione debiti e finanziamenti","Archivio ricevute/documenti","Report mensile stampabile/PDF","Analisi e statistiche mantenute dalla v6","Nessun server: dati locali nel browser"]],
+    ["6.0.0","Gestione finanziaria completa",["Conti e portafogli con saldo separato","Obiettivi di risparmio","Analisi finanziaria avanzata","Calendario finanziario","Avvisi intelligenti","Categorie personalizzabili","Ricorrenze settimanali, mensili e annuali","PIN locale e blocco automatico","Import/export JSON e backup automatici locali"]],
+    ["5.3.1","Pulizia interfaccia",["Rimossa la vecchia scritta/link blu flottante","Rifiniture del tema chiaro e della tipografia"]],
+    ["5.3.0","Rifinitura tema chiaro",["Rimossa la scritta Changelog flottante","Palette chiara migliorata","Font Inter e Plus Jakarta Sans","Contrasto, gerarchia, ombre e pulsanti migliorati","Versione aggiornata a v5.3.0"]],
+    ["5.2.0","Changelog integrato e branding",["Changelog integrato direttamente nella GUI","Logo SVG e favicon dedicata","Corretta duplicazione del logo","Versione corrente aggiornata","Forma e posizione dei pulsanti migliorate"]],
+    ["5.1.0","Correzioni interfaccia",["Corretto il doppio logo","Corretto il Changelog sovrapposto","Corretta la modalità scura","Migliorato il contrasto"]],
+    ["5.0.0","Restyling grafico",["Nuova identità visiva","Logo SVG locale","Dashboard e componenti ridisegnati","Effetti hover e micro-interazioni","Contrasto e gerarchia visiva migliorati","Layout mobile mantenuto e rifinito"]],
+    ["4.0.0","Miglioramenti e ricorrenze",["Spese ricorrenti","Pulsante rapido + Entrata","Filtro per mese nelle transazioni","Filtri combinabili con ricerca, tipo e categoria","Gestione ricorrenze migliorata","Migrazione automatica dei dati","Backup locali e import/export JSON"]],
+    ["3.0.0","Backup e compatibilità",["Sistema di dati versionato","Migrazione automatica dei dati","Fino a 5 backup automatici locali","Ripristino dell'ultimo backup","Compatibilità tra aggiornamenti migliorata"]],
+    ["2.0.0","Entrate ricorrenti",["Entrate ricorrenti mensili","Descrizione, importo, giorno, categoria, metodo e data iniziale","Generazione automatica delle entrate maturate","Modifica ed eliminazione delle ricorrenze"]],
+    ["1.0.0","Prima versione",["Dashboard con saldo, entrate e spese","Inserimento, modifica ed eliminazione delle transazioni","Categorie e metodi di pagamento","Budget mensili","Grafici e riepiloghi","Salvataggio locale tramite Local Storage"]]
   ].map((v,i)=>`<article class="timeline-item ${i===0?"current":""}"><div class="timeline-dot"></div><div class="timeline-card"><div class="timeline-head"><span class="version-pill">${v[0]}</span>${i===0?"<b>VERSIONE ATTUALE</b>":""}</div><h3>${v[1]}</h3><ul>${v[2].map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div></article>`).join("");
 }
 function renderSettings(){
@@ -601,37 +608,3 @@ function init(){
   else {$("app").classList.remove("hidden");renderAll()}
 }
 init();
-
-
-
-/* v7.2.4 — Mobile quick actions.
-   On mobile/tablet the bottom-center + is the only add entry point. */
-(function () {
-  function hideMobileTopQuickActions() {
-    if (window.innerWidth > 1024) return;
-
-    const labels = /spesa|entrata|ricorrente/i;
-    document.querySelectorAll('button, a').forEach(function (el) {
-      const text = (el.textContent || '').trim();
-      if (!labels.test(text)) return;
-
-      const rect = el.getBoundingClientRect();
-      const top = rect.top + window.scrollY;
-      if (top < window.innerHeight * 0.8) {
-        el.classList.add('mobile-top-action-hidden');
-      }
-    });
-  }
-
-  function initMobileTopQuickActions() {
-    hideMobileTopQuickActions();
-    window.addEventListener('resize', hideMobileTopQuickActions, { passive: true });
-    window.addEventListener('orientationchange', hideMobileTopQuickActions, { passive: true });
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initMobileTopQuickActions);
-  } else {
-    initMobileTopQuickActions();
-  }
-})();

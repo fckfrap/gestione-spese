@@ -341,3 +341,14 @@ body.dark .today-strip{background:linear-gradient(110deg,#14213a,#111c2e)}
 @media (max-width: 1024px) {
   .mobile-top-action-hidden { display: none !important; }
 }
+
+
+/* v7.2.5 — PWA installation and mobile add menu */
+.pwa-install-card[hidden]{display:none!important}
+.pwa-install-card .setting-hint{display:block;margin-top:8px;color:var(--muted);font-size:12px;line-height:1.4}
+.pwa-add-menu{display:grid;gap:10px;margin-top:18px}
+.pwa-add-menu .btn.full{width:100%}
+@media (max-width:900px){
+  .pwa-install-card{order:-1}
+  .pwa-add-menu .btn{min-height:48px}
+}

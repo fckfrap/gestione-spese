@@ -1,4 +1,5 @@
 {
+  "id": "./",
   "name": "Gestione Spese",
   "short_name": "Gestione Spese",
   "description": "Gestione personale delle spese, entrate e risparmi.",
@@ -6,9 +7,17 @@
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
+  "display_override": [
+    "standalone",
+    "browser"
+  ],
   "background_color": "#f6f8fc",
   "theme_color": "#0f172a",
   "orientation": "portrait-primary",
+  "categories": [
+    "finance",
+    "productivity"
+  ],
   "icons": [
     {
       "src": "icons/icon-192.png",
