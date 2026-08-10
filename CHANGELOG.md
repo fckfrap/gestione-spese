@@ -1,5 +1,13 @@
 # Changelog — Gestione Spese
 
+## v7.2.3 — Correzione menu mobile
+- Corretto il menu inferiore su smartphone e tablet.
+- Navigazione mobile resa indipendente dall'inizializzazione delle altre funzioni dell'app.
+- Corretto il passaggio tra Home, Analisi, Movimenti e Altro.
+- Corretto il pulsante centrale `+` per aggiungere una spesa.
+- La sezione selezionata viene aperta dall'inizio senza mantenere il dashboard fisso.
+- Aggiornato il Service Worker alla v7.2.3.
+
 ## v7.2.2 — Correzione navigazione mobile
 - Corretto il menu inferiore su smartphone e tablet.
 - La navigazione mobile ora cambia correttamente sezione usando lo stesso sistema della versione desktop.

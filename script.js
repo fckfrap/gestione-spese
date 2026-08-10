@@ -1,4 +1,4 @@
-const VERSION="7.2.2";
+const VERSION="7.2.3";
 const STORAGE_KEY="expenseAppData";
 const BACKUP_KEY="expenseAppBackups";
 const OLD_KEY="expenseAppData";
@@ -602,34 +602,3 @@ function init(){
 }
 init();
 
-// v7.2.2 — Mobile/PWA navigation
-// On mobile the app uses the same section system as the desktop sidebar.
-// Using scrollIntoView here was incorrect because inactive sections use
-// display:none; the navigation must call showSection() instead.
-function activateMobileNav(target) {
-  document.querySelectorAll(".mobile-nav-item").forEach(btn => {
-    btn.classList.toggle("active", btn.dataset.mobileTarget === target);
-  });
-}
-
-document.addEventListener("click", (e) => {
-  const btn = e.target.closest(".mobile-nav-item[data-mobile-target]");
-  if (!btn) return;
-
-  const target = btn.dataset.mobileTarget;
-  if (!document.getElementById(target)) return;
-
-  showSection(target);
-  activateMobileNav(target);
-
-  // Start each section at its top, without keeping the dashboard/header fixed.
-  const main = document.querySelector("main");
-  if (main) main.scrollTo({top: 0, behavior: "smooth"});
-  else window.scrollTo({top: 0, behavior: "smooth"});
-});
-
-const originalShowSection = showSection;
-showSection = function(id) {
-  originalShowSection(id);
-  activateMobileNav(id);
-};

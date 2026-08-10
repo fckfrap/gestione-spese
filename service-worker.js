@@ -1,4 +1,4 @@
-const CACHE="gestione-spese-v7-2-2";
+const CACHE="gestione-spese-v7-2-3";
 const APP_SHELL=[
   "./",
   "./index.html",

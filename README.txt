@@ -1,10 +1,10 @@
-GESTIONE SPESE v7.2.2
+GESTIONE SPESE v7.2.3
 
 WINDOWS
 npm install
 npm start
 npm run build
-Installer: dist/Gestione Spese Setup 7.2.2.exe
+Installer: dist/Gestione Spese Setup 7.2.3.exe
 
 SMARTPHONE / TABLET
 La cartella contiene manifest.json e service-worker.js.

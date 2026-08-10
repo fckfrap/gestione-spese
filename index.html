@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#3568d4">
-<title>Gestione Spese · v7.2.2</title>
+<title>Gestione Spese · v7.2.3</title>
 <link rel="icon" type="image/svg+xml" href="logo.svg">
 <link rel="apple-touch-icon" href="logo.svg">
 <link rel="stylesheet" href="style.css">
@@ -212,7 +212,7 @@
 </section>
 
 <section id="changelog" class="section">
-  <div class="section-toolbar"><div><h2>Changelog</h2><p>Cronologia delle versioni, direttamente nell'app.</p></div><span class="current-version">v7.2.2</span></div>
+  <div class="section-toolbar"><div><h2>Changelog</h2><p>Cronologia delle versioni, direttamente nell'app.</p></div><span class="current-version">v7.2.3</span></div>
   <div class="timeline" id="changelogContent"></div>
 </section>
 
@@ -226,7 +226,7 @@
   </div>
 </section>
 
-<footer class="app-footer"><span>Gestione Spese · v7.2.2</span><span>Dati salvati localmente</span></footer>
+<footer class="app-footer"><span>Gestione Spese · v7.2.3</span><span>Dati salvati localmente</span></footer>
 </main>
 </div>
 
@@ -243,9 +243,49 @@
 </nav>
 
 <script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));
-}
+/* v7.2.3 — mobile navigation is intentionally independent from the app
+   initialization so it still works if another app module throws an error. */
+(function(){
+  const titles = {
+    dashboard:["Dashboard","Una panoramica chiara delle tue finanze."],
+    analytics:["Analisi","Confronti, medie e andamento delle tue abitudini."],
+    transactions:["Transazioni","Controlla, modifica e filtra tutti i movimenti."],
+    settings:["Impostazioni","Privacy, backup, tema e sicurezza."]
+  };
+
+  function mobileGo(target){
+    const section=document.getElementById(target);
+    if(!section) return;
+    document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active',s.id===target));
+    document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.section===target));
+    document.querySelectorAll('.mobile-nav-item').forEach(b=>b.classList.toggle('active',b.dataset.mobileTarget===target));
+    const title=document.getElementById('pageTitle');
+    const subtitle=document.getElementById('pageSubtitle');
+    if(titles[target] && title && subtitle){ title.textContent=titles[target][0]; subtitle.textContent=titles[target][1]; }
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  document.addEventListener('click', function(e){
+    const nav=e.target.closest('.mobile-nav-item[data-mobile-target]');
+    if(nav){
+      e.preventDefault();
+      e.stopPropagation();
+      mobileGo(nav.dataset.mobileTarget);
+      return;
+    }
+    const add=e.target.closest('.mobile-nav-add[data-action]');
+    if(add){
+      e.preventDefault();
+      e.stopPropagation();
+      const quick=document.getElementById('quickExpense');
+      if(quick) quick.click();
+    }
+  }, true);
+
+  if('serviceWorker' in navigator){
+    window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));
+  }
+})();
 </script>
 </body>
 </html>
