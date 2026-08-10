@@ -1,4 +1,4 @@
-const VERSION="7.2.1";
+const VERSION="7.2.2";
 const STORAGE_KEY="expenseAppData";
 const BACKUP_KEY="expenseAppBackups";
 const OLD_KEY="expenseAppData";
@@ -455,7 +455,7 @@ function renderCategories(){
   $("categoriesGrid").querySelectorAll("[data-del-cat]").forEach(b=>b.onclick=()=>deleteCategory(b.dataset.delCat));
 }
 function renderChangelog(){
-  $("changelogContent").innerHTML=[["7.2.1","Smartphone, tablet e PWA",["Interfaccia responsive","Navigazione mobile","PWA installabile","Supporto smartphone e tablet","Service Worker per uso più affidabile","Icone PWA dedicate"]],
+  $("changelogContent").innerHTML=[["7.2.2","Smartphone, tablet e PWA",["Interfaccia responsive","Navigazione mobile","PWA installabile","Supporto smartphone e tablet","Service Worker per uso più affidabile","Icone PWA dedicate"]],
     ["7.1.0","Backup automatici e sicurezza dei dati",["Backup automatico all'avvio","Conservazione degli ultimi 15 backup","Ripristino completo dei dati","Gestione backup dalle Impostazioni","Apertura della cartella dei backup","Icona personalizzata dell'app"]],
     ["7.0.0","Finanza personale completa",["Dashboard finanziaria avanzata","Previsioni e analisi delle spese","Obiettivi di risparmio","Calendario finanziario","Avvisi intelligenti","Categorie personalizzabili","Ricorrenze settimanali, mensili e annuali","PIN e blocco automatico"]],
     ["5.3.1","Pulizia interfaccia",["Rimossa la vecchia scritta blu flottante","Rifiniture del tema chiaro e tipografia"]],
@@ -602,12 +602,34 @@ function init(){
 }
 init();
 
-// v7.2.1 — Mobile/PWA navigation
+// v7.2.2 — Mobile/PWA navigation
+// On mobile the app uses the same section system as the desktop sidebar.
+// Using scrollIntoView here was incorrect because inactive sections use
+// display:none; the navigation must call showSection() instead.
+function activateMobileNav(target) {
+  document.querySelectorAll(".mobile-nav-item").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.mobileTarget === target);
+  });
+}
+
 document.addEventListener("click", (e) => {
-  const btn = e.target.closest("[data-mobile-target]");
+  const btn = e.target.closest(".mobile-nav-item[data-mobile-target]");
   if (!btn) return;
+
   const target = btn.dataset.mobileTarget;
-  document.querySelectorAll(".mobile-nav-item").forEach(x => x.classList.toggle("active", x === btn));
-  const section = document.getElementById(target);
-  if (section) section.scrollIntoView({behavior:"smooth", block:"start"});
+  if (!document.getElementById(target)) return;
+
+  showSection(target);
+  activateMobileNav(target);
+
+  // Start each section at its top, without keeping the dashboard/header fixed.
+  const main = document.querySelector("main");
+  if (main) main.scrollTo({top: 0, behavior: "smooth"});
+  else window.scrollTo({top: 0, behavior: "smooth"});
 });
+
+const originalShowSection = showSection;
+showSection = function(id) {
+  originalShowSection(id);
+  activateMobileNav(id);
+};
