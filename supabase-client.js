@@ -6,7 +6,7 @@ const SUPABASE_CONFIG = {
   anonKey: "sb_publishable_tf1MJ5MjV_vk0AJeIRB4ig_K49ZF_UJ"
 };
 
-const SupabaseSync = (() => {
+window.SupabaseSync = (() => {
   const configured = () => !!SUPABASE_CONFIG.url && !!SUPABASE_CONFIG.anonKey && !SUPABASE_CONFIG.anonKey.startsWith("INSERISCI_");
   const SESSION_KEY = "gestioneSpeseSupabaseSession";
   let session = null;
@@ -191,5 +191,3 @@ const SupabaseSync = (() => {
   }
   return {configured,init,signUp,signIn,signOut,refresh,user,isAuthenticated,pullState,queueSave};
 })();
-
-window.SupabaseSync = SupabaseSync;
