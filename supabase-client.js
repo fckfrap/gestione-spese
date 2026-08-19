@@ -189,6 +189,7 @@ const SupabaseSync = (() => {
     return {configured:true,authenticated:isAuthenticated()};
      
   }
-window.SupabaseSync = SupabaseSync;
   return {configured,init,signUp,signIn,signOut,refresh,user,isAuthenticated,pullState,queueSave};
 })();
+
+window.SupabaseSync = SupabaseSync;
