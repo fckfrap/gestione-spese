@@ -104,17 +104,21 @@ window.SupabaseSync = (() => {
   function subscriptionRows(state){return state.subscriptions.map(s=>({id:String(s.id),user_id:user().id,name:s.name,amount:Number(s.amount)||0,frequency:s.frequency||"monthly",day:Number(s.day)||1,start_date:s.startDate||null,icon:s.icon||"◉"}));}
   function debtRows(state){return state.debts.map(d=>({id:String(d.id),user_id:user().id,name:d.name,total:Number(d.total)||0,remaining:Number(d.remaining)||0,installment:Number(d.installment)||0,next_date:d.nextDate||null,icon:d.icon||"💳"}));}
   function categoryRows(state){return [...(state.categories.expense||[]).map(x=>({type:"expense",name:x[0],icon:x[1]})),...(state.categories.income||[]).map(x=>({type:"income",name:x[0],icon:x[1]}))].map(x=>({id:`${x.type}_${encodeURIComponent(x.name)}`,user_id:user().id,type:x.type,name:x.name,icon:x.icon||"📌"}));}
-  function netWorthRows(state){
-  return state.netWorthHistory.map(x=>{
-    const month=String(x.month).slice(0,7);
+function netWorthRows(state){
+  const rows = new Map();
 
-    return {
-      id:month,
-      user_id:user().id,
-      month:`${month}-01`,
-      value:Number(x.value)||0
-    };
+  state.netWorthHistory.forEach(x=>{
+    const month = String(x.month).slice(0,7);
+
+    rows.set(month,{
+      id: month,
+      user_id: user().id,
+      month: `${month}-01`,
+      value: Number(x.value)||0
+    });
   });
+
+  return [...rows.values()];
 }
 
   async function pushState(state){
