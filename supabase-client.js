@@ -176,8 +176,8 @@ const SupabaseSync = (() => {
     session=readSession();
     if(session && session.expires_at && session.expires_at*1000<Date.now()+60000) await refresh();
     return {configured:true,authenticated:isAuthenticated()};
-     window.SupabaseSync = SupabaseSync;
+     
   }
-
+window.SupabaseSync = SupabaseSync;
   return {configured,init,signUp,signIn,signOut,refresh,user,isAuthenticated,pullState,queueSave};
 })();
